@@ -3,7 +3,7 @@ import 'InventoryMember.dart';
 
 class InventoryMemberWidget extends StatelessWidget {
   final MaterialColor myColor;
-  final InventoryMember ivm;
+  final Product ivm;
   final VoidCallback add;
   final VoidCallback remove;
   final VoidCallback edit;

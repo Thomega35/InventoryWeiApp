@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'InventoryMember.dart';
-import 'InventoryMember_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'ChangeNamePopUp.dart';
+import 'InventoryPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WEI Inventory Thomas',
+      title: 'Thomas Inventory',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
 
@@ -25,22 +26,19 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
 
-        fontFamily: "Futura Light",
-
-        textTheme: const TextTheme(
-            headline1: TextStyle(
+        textTheme: TextTheme(
+            headline1: GoogleFonts.lato(
                 fontSize: 48.0,
                 fontWeight: FontWeight.w800,
                 color: Colors.black87),
-            headline2: TextStyle(
+            headline2: GoogleFonts.lato(
                 fontSize: 24.0,
                 fontWeight: FontWeight.w300,
                 color: Colors.black87),
-            subtitle1: TextStyle(
+            subtitle1: GoogleFonts.lato(
                 fontSize: 26.0,
                 fontWeight: FontWeight.w800,
                 color: Colors.black87)),
-
 
         visualDensity: VisualDensity.adaptivePlatformDensity,
         colorScheme: ColorScheme.fromSwatch()
@@ -50,6 +48,7 @@ class MyApp extends StatelessWidget {
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => const MyHomePage()
+
       },
     );
   }
@@ -57,90 +56,30 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
+  static MaterialColor randomMaterialColor() {
+    return Colors.primaries[Random().nextInt(Colors.primaries.length)];
+  }
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<InventoryMember> inventories = [
-    InventoryMember("Fromage", 2),
-    InventoryMember("Cacahuètes", 3),
-    InventoryMember("Peluche", 3),
-  ];
-  
-  final List<MaterialColor> inventoriesColors = [
-    Colors.primaries[Random().nextInt(Colors.primaries.length)],
-    Colors.primaries[Random().nextInt(Colors.primaries.length)],
-    Colors.primaries[Random().nextInt(Colors.primaries.length)]
-  ];
-  final mainColor = Colors.primaries[Random().nextInt(Colors.primaries.length)];
-  final secondColor = Colors.primaries[Random().nextInt(Colors.primaries.length)];
-  String newName = "";
-  addItem(){
+  final List<Inventory> inventories = [];
+  addInventory(String newName) {
     setState(() {
-      inventories.add(InventoryMember("TODO", 2));
-      inventoriesColors.add(Colors.primaries[Random().nextInt(Colors.primaries.length)]);
+      inventories.add(Inventory(
+        mainColor: MyHomePage.randomMaterialColor(),
+        secondColor: MyHomePage.randomMaterialColor(),
+        title: newName,
+      ));
     });
   }
-  add(int index) {
-    setState(() {
-      inventories[index] = inventories[index].add();
-    });
-  }
-  remove(int index) {
-    setState(() {if (inventories[index].quantity - 1 <= 0) {
-      inventories.removeAt(index);
-      inventoriesColors.removeAt(index);
-    } else {
-      inventories[index] = inventories[index].remove();
-    }});
-  }
-  rename(String newName, int index) {
-    setState(() {
-      inventories[index] = inventories[index].rename(newName);
-    });
-  }
-  editInventoryMemberName(int index) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("Entrez le nom du produit"),
-          content: TextField(
-            onChanged: (value) {
-              newName = value;
-            },
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Annuler"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text("Ok"),
-              onPressed: () {
-                rename(newName, index);
-                newName = "";
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ));
-  }
-  MaterialColor randomMaterialColor() {
-    return Colors.primaries[Random().nextInt(Colors.primaries.length)];
+  addAndRequestInventory() {
+    ChangeNamePopUp()
+        .show(context, "Entrez le nom de l'inventaire", "", addInventory);
   }
 
-  Color contrastColor(Color iColor) {
-    // Calculate the perceptive luminance (aka luma) - human eye favors green color... 
-    final double luma = ((0.299 * iColor.red) + (0.587 * iColor.green) + (0.114 * iColor.blue)) / 255;
-
-    // Return black for bright colors, white for dark colors
-    return luma > 0.5 ? Colors.black : Colors.white;
-  }
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,65 +92,80 @@ class _MyHomePageState extends State<MyHomePage> {
             ), // Box to create padding on the top of the screen
             SizedBox(
               height: 60,
-              child : Text(
-                'My_Inventory',
+              child: Text(
+                'Stock',
                 style: Theme.of(context).textTheme.headline1,
               ),
-            ), //Title of the inventory
-            Row( // Row to create the buttons to rename and remove inventory
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ClipOval(
-                  child: Material(
-                    color: mainColor,
-                    child: InkWell(
-                      splashColor: secondColor,
-                      onTap: addItem,
-                      child: const SizedBox(
-                        width: 40,
-                        height: 40,
-                        child : Icon(Icons.edit, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 10,
-                ),
-                ClipOval(
-                  child: Material(
-                    color: secondColor,
-                    child: InkWell(
-                      splashColor: mainColor,
-                      onTap: addItem,
-                      child: const SizedBox(
-                        width: 40,
-                        height: 40,
-                        child : Icon(Icons.delete, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            ), //Title of the App
             Expanded(
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
-                child: GridView.builder(
-                  itemBuilder: (context, index) => InventoryMemberWidget(
-                      ivm: inventories[index],
-                      myColor: inventoriesColors[index],
-                      add: () => add(index),
-                      remove: () => remove(index),
-                      edit: () => editInventoryMemberName(index),
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 10,
+                  ),
+                  itemBuilder: (context, index) => SizedBox(
+                    height: 75,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                              width: 5.0, color: inventories[index].mainColor),
+                        ),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 7,
+                            offset: const Offset(
+                                0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: TextButton(
+                        style: ButtonStyle(
+                          //Col: Colors.transparent,
+                          overlayColor: MaterialStateProperty.all(
+                              inventories[index].mainColor),
+                        ),
+                        onPressed: () {
+                          print("TODO");
+                        },
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              20, 0, 20, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "#${index + 1}",
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                inventories[index].title,
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
+                              const Spacer(
+                                flex: 1,
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_sharp,
+                                size: Theme.of(context)
+                                    .textTheme
+                                    .headline2
+                                    ?.fontSize,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   itemCount: inventories.length,
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 200,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    childAspectRatio: 5/4,
-                  ),
                 ),
               ),
             ),
@@ -219,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: addItem,
+        onPressed: addAndRequestInventory,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
