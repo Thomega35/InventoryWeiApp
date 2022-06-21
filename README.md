@@ -4,8 +4,10 @@ A prcatice application to learning Flutter's basics.
 
 Project during my internship in Feldrise.
 
-This app is the implementation of the following project :
+This app is a BAD implementation of the following project :
 https://gist.github.com/Feldrise/820a9e523a34517856518ca5d6088b37
+
+It is made without any provider
 
 ## Getting Started
 
