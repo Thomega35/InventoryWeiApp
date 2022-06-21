@@ -22,7 +22,10 @@ class MyApp extends StatelessWidget {
         cardColor: Colors.white,
 
         appBarTheme: const AppBarTheme(
-          // color: Colors.white,
+          color: Colors.white,
+          iconTheme: IconThemeData(
+            color: Colors.black,
+          ),
           elevation: 0,
         ),
 
@@ -47,8 +50,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
-        '/': (context) => const MyHomePage()
-
+        '/': (context) => const MyHomePage(),
       },
     );
   }
@@ -56,6 +58,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
+
   static MaterialColor randomMaterialColor() {
     return Colors.primaries[Random().nextInt(Colors.primaries.length)];
   }
@@ -66,12 +69,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Inventory> inventories = [];
+
   addInventory(String newName) {
     setState(() {
       inventories.add(Inventory(
         mainColor: MyHomePage.randomMaterialColor(),
         secondColor: MyHomePage.randomMaterialColor(),
         title: newName,
+        removeInventory: () => removeInventory(inventories.length-1),
       ));
     });
   }
@@ -79,7 +84,13 @@ class _MyHomePageState extends State<MyHomePage> {
     ChangeNamePopUp()
         .show(context, "Entrez le nom de l'inventaire", "", addInventory);
   }
-
+  removeInventory(int index) {
+    print(index);
+    setState(() {
+      inventories.removeAt(index);
+    });
+    Navigator.of(context).pop(context);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               inventories[index].mainColor),
                         ),
                         onPressed: () {
-                          print("TODO");
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => inventories[index]));
                         },
                         child: Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(

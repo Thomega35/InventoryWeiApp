@@ -11,17 +11,10 @@ class Inventory extends StatefulWidget {
   final MaterialColor mainColor;
   final MaterialColor secondColor;
   final String title;
-  final List<Product> products = [
-    Product("Fromage", 2),
-    Product("Cacahuètes", 3),
-    Product("Peluche", 3),
-  ];
-  final List<MaterialColor> productsColors = [
-    MyHomePage.randomMaterialColor(),
-    MyHomePage.randomMaterialColor(),
-    MyHomePage.randomMaterialColor(),
-  ];
-  Inventory({Key? keyI, required this.mainColor, required this.secondColor, required this.title}) : super(key: keyI);
+  final VoidCallback removeInventory;
+  final List<Product> products = [];
+  final List<MaterialColor> productsColors = [];
+  Inventory({Key? keyI, required this.mainColor, required this.secondColor, required this.title, required this.removeInventory}) : super(key: keyI);
   @override
   State<Inventory> createState() => _InventoryState();
 }
@@ -84,25 +77,20 @@ class _InventoryState extends State<Inventory> {
     ChangeNamePopUp()
         .show(context, "Entrez le nom de l'inventaire", "", renameInventory);
   }
-  todo() {
-    // TODO: implement TODO
-    throw UnimplementedError();
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              height: 80,
-            ), // Box to create padding on the top of the screen
             SizedBox(
               height: 60,
               child : Text(
-                widget.title,
+                name,
                 style: Theme.of(context).textTheme.headline1,
               ),
             ), //Title of the inventory
@@ -123,15 +111,16 @@ class _InventoryState extends State<Inventory> {
                     ),
                   ),
                 ),
-                Container(
+                const SizedBox(
                   width: 10,
+                  height: 60,
                 ),
                 ClipOval(
                   child: Material(
                     color: widget.secondColor,
                     child: InkWell(
                       splashColor: widget.mainColor,
-                      onTap: todo,
+                      onTap: widget.removeInventory,
                       child: const SizedBox(
                         width: 40,
                         height: 40,
