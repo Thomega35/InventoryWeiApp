@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:wei_inventoryv1/ChangeNamePopUp.dart';
 import 'package:wei_inventoryv1/ConfirmationSuprPopUp.dart';
@@ -7,19 +6,19 @@ import 'InventoryMember_widget.dart';
 import 'main.dart';
 
 
-class Inventory extends StatefulWidget {
+class InventoryPage extends StatefulWidget {
   final MaterialColor mainColor;
   final MaterialColor secondColor;
   final String title;
   final VoidCallback removeInventory;
   final List<Product> products = [];
   final List<MaterialColor> productsColors = [];
-  Inventory({Key? keyI, required this.mainColor, required this.secondColor, required this.title, required this.removeInventory}) : super(key: keyI);
+  InventoryPage({Key? keyI, required this.mainColor, required this.secondColor, required this.title, required this.removeInventory}) : super(key: keyI);
   @override
-  State<Inventory> createState() => _InventoryState();
+  State<InventoryPage> createState() => _InventoryPageState();
 }
 
-class _InventoryState extends State<Inventory> {
+class _InventoryPageState extends State<InventoryPage> {
 
   late String name;
 
@@ -28,7 +27,6 @@ class _InventoryState extends State<Inventory> {
     super.initState();
     name = widget.title;
   }
-
   addItem(String newName){
     setState(() {
       widget.products.add(Product(newName, 1));

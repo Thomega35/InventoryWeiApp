@@ -68,11 +68,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Inventory> inventories = [];
+  final List<InventoryPage> inventories = [];
 
   addInventory(String newName) {
     setState(() {
-      inventories.add(Inventory(
+      inventories.add(InventoryPage(
         mainColor: MyHomePage.randomMaterialColor(),
         secondColor: MyHomePage.randomMaterialColor(),
         title: newName,
@@ -85,7 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
         .show(context, "Entrez le nom de l'inventaire", "", addInventory);
   }
   removeInventory(int index) {
-    print(index);
     setState(() {
       inventories.removeAt(index);
     });
